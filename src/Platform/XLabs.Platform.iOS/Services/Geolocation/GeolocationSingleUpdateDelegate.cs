@@ -7,8 +7,6 @@ namespace XLabs.Platform.Services.Geolocation
 	using CoreLocation;
 	using Foundation;
 
-	using XLabs.Platform.Services.GeoLocation;
-
 	/// <summary>
 	/// Class GeolocationSingleUpdateDelegate.
 	/// </summary>
@@ -182,7 +180,7 @@ namespace XLabs.Platform.Services.Geolocation
 			_position.Latitude = newLocation.Coordinate.Latitude;
 			_position.Longitude = newLocation.Coordinate.Longitude;
 			_position.Speed = newLocation.Speed;
-			//_position.Timestamp = new DateTimeOffset(newLocation.Timestamp);
+			_position.Timestamp = new DateTimeOffset((DateTime)newLocation.Timestamp);
 
 			_haveLocation = true;
 

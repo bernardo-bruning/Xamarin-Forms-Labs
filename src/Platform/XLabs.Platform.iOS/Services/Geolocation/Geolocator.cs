@@ -9,8 +9,6 @@ namespace XLabs.Platform.Services.Geolocation
 	using ObjCRuntime;
 	using UIKit;
 
-	using XLabs.Platform.Services.GeoLocation;
-
 	/// <summary>
 	/// Class Geolocator.
 	/// </summary>
@@ -379,7 +377,7 @@ namespace XLabs.Platform.Services.Geolocation
 				p.Speed = location.Speed;
 			}
 
-			//p.Timestamp = new DateTimeOffset(location.Timestamp);
+			p.Timestamp = new DateTimeOffset((DateTime)location.Timestamp);
 
 			_position = p;
 
