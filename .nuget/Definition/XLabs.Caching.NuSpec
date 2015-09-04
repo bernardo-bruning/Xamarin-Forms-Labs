@@ -4,11 +4,11 @@
 		<id>XLabs.Caching</id>
 		<title>XLabs - Caching</title>
 		<tags>Xamarin XLabs caching</tags>
-		<version>2.0.0</version>
+		<version>2.0.5603</version>
 		<authors>XLabs Team</authors>
-		<licenseUrl>https://github.com/XForms/Xamarin-Forms-Labs/blob/master/LICENSE</licenseUrl>
-		<projectUrl>https://github.com/XForms/Xamarin-Forms-Labs</projectUrl>
-		<iconUrl>https://raw.githubusercontent.com/XForms/Xamarin-Forms-Labs/master/src/Xamarin.Forms.Labs/Design/Icons/nuget/icon_nuget.png</iconUrl>
+		<licenseUrl>https://github.com/XLabs/Xamarin-Forms-Labs/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/XLabs/Xamarin-Forms-Labs</projectUrl>
+		<iconUrl>https://raw.githubusercontent.com/XLabs/Xamarin-Forms-Labs/master/Design/Icons/nuget/icon_nuget.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>
 			XLabs is a open source project that aims to provide a powerfull and cross platform set of controls tailored to work with Xamarin Forms.
@@ -30,7 +30,12 @@
 		<file src="..\..\build\**\XLabs.Caching.dll.mdb" target="lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1" />
 		<file src="..\..\build\**\XLabs.Caching.pdb" target="lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1" />
 		<file src="..\..\build\**\XLabs.Caching.xml" target="lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1" />
-		
+
+		<file src="..\..\build\**\XLabs.Caching.dll" target="lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1" />
+		<file src="..\..\build\**\XLabs.Caching.dll.mdb" target="lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1" />
+		<file src="..\..\build\**\XLabs.Caching.pdb" target="lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1" />
+		<file src="..\..\build\**\XLabs.Caching.xml" target="lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1" />
+
 		<!-- Source Files for Symbol Server -->
 		<file src="..\..\src\Caching\XLabs.Caching\**\*.cs" target="src" />
 	</files>

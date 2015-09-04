@@ -10,7 +10,7 @@ namespace XLabs.Sample
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-
+    using Pages.Samples;
     using Xamarin.Forms;
 
     using XLabs.Forms.Controls;
@@ -74,7 +74,7 @@ namespace XLabs.Sample
 
             var mainTab = new ExtendedTabbedPage()
             {
-                Title = "Xamarin Forms Labs",
+                Title = "XLabs",
                 SwipeEnabled = true,
                 TintColor = Color.White,
                 BarTintColor = Color.Blue,
@@ -93,6 +93,7 @@ namespace XLabs.Sample
             var controls = GetControlsPage(mainPage);
             var services = GetServicesPage(mainPage);
             var charts = GetChartingPage(mainPage);
+            var samples = GetSamplesPage(mainPage);
 
             var mvvm = ViewFactory.CreatePage<MvvmSampleViewModel, Page>();
 
@@ -100,6 +101,7 @@ namespace XLabs.Sample
             mainTab.Children.Add(services);
             mainTab.Children.Add(charts);
             mainTab.Children.Add(mvvm as Page);
+            mainTab.Children.Add(samples);
 
             return mainPage;
         }
@@ -119,6 +121,7 @@ namespace XLabs.Sample
                 "GeoLocator",
                 "Camera",
                 "Accelerometer",
+                "Gyroscope",
                 "Display",
                 "Cache",
                 "Sound",
@@ -137,6 +140,10 @@ namespace XLabs.Sample
 
             lstServices.ItemSelected += async (sender, e) =>
             {
+                if (e.SelectedItem == null) return;
+
+                lstServices.SelectedItem = null;
+
                 switch (e.SelectedItem.ToString().ToLower())
                 {
                     case "texttospeech":
@@ -157,6 +164,9 @@ namespace XLabs.Sample
                     case "accelerometer":
                         await mainPage.Navigation.PushAsync(new AcceleratorSensorPage());
                         break;
+                    case "gyroscope":
+                        await mainPage.Navigation.PushAsync(new GyroscopePage());
+                        break;
                     case "display":
                         await mainPage.Navigation.PushAsync(new AbsoluteLayoutWithDisplayInfoPage(Resolver.Resolve<IDisplay>()));
                         break;
@@ -170,7 +180,7 @@ namespace XLabs.Sample
                     //    await mainPage.Navigation.PushAsync(new BluetoothPage());
                     //    break;
                     case "fontmanager":
-                        await mainPage.Navigation.PushAsync(new FontManagerPage(Resolver.Resolve<IDisplay>()));
+                        await mainPage.Navigation.PushAsync(new FontManagerPage(Resolver.Resolve<IDisplay>(), Resolver.Resolve<IFontManager>()));
                         break;
                     case "nfc":
                         await mainPage.Navigation.PushAsync(new NfcDevicePage());
@@ -214,6 +224,7 @@ namespace XLabs.Sample
                 {"CircleImage", typeof(CircleImagePage)},
                 {"DynamicListView", typeof(DynamicListView)},
                 {"DragPage", typeof(DragPage)},
+                {"ExtendedButton", typeof(ExtendedButtonPage)},
                 {"ExtendedCell", typeof(ExtendedCellPage)},
                 {"ExtendedEntry", typeof(ExtendedEntryPage)},
                 {"ExtendedLabel", typeof(ExtendedLabelPage)},
@@ -276,6 +287,30 @@ namespace XLabs.Sample
         }
 
         /// <summary>
+        /// Gets the samples page.
+        /// </summary>
+        /// <param name="mainPage">The main page.</param>
+        /// <returns>Content Page.</returns>
+        private static ContentPage GetSamplesPage(VisualElement mainPage)
+        {
+            var listItems = new SortedDictionary<string, Type>
+            {
+                 {"US Presidents Circle Image", typeof(UsPresidentList)},
+                 {"Web hybrid func callback", typeof(WebHybridSamplePage)},
+                {"Web hybrid page loading", typeof(WebPageLoadSample)},
+            };
+
+            var controls = new ContentPage
+            {
+                Title = "Samples",
+                Icon = Device.OnPlatform("pie30_32.png", "pie30_32.png", "Images/pie30_32.png"),
+                Content = BuildListView(mainPage, listItems),
+            };
+
+            return controls;
+        }
+
+        /// <summary>
         /// Build a ListView associated with a SortedDictionary as the DataSource
         /// </summary>
         /// <param name="mainPage">Parent page for the page containing the list view</param>
@@ -295,21 +330,32 @@ namespace XLabs.Sample
             {
                 Type result = null;
 
+                if (e.SelectedItem is KeyValuePair<string, Type>)
+                {
+                    result = ((KeyValuePair<string, Type>)e.SelectedItem).Value;
+                }
+                else
+                {
+                    var item = (DictionaryEntry) e.SelectedItem;
+                    result = (Type)item.Value;
+                }
+
+
                 // This is actually some type of bug with Xamarin.
                 // On iOS the SortedDiectionary entries are DictionaryEntries
                 // on WP, they are KeyValuePairs.
                 // Using the wrong type causes a casting exception.
-                switch (Device.OS)
-                {
-                    case TargetPlatform.Android:
-                    case TargetPlatform.iOS:
-                        var item = (DictionaryEntry) e.SelectedItem;
-                        result = (Type)item.Value;
-                        break;
-                    case TargetPlatform.WinPhone:
-                        result = ((KeyValuePair<string, Type>)e.SelectedItem).Value;
-                        break;
-                }
+                //switch (Device.OS)
+                //{
+                    
+                //    case TargetPlatform.iOS:
+
+                //        break;
+                //    case TargetPlatform.Android:
+                //    case TargetPlatform.WinPhone:
+                //        result = 
+                //        break;
+                //}
 
                 await ShowPage(mainPage, result);
             };

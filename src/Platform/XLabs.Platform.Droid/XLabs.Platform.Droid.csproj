@@ -15,7 +15,7 @@
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,8 +39,9 @@
     <DocumentationFile>..\..\..\build\XLabs.Platform.Droid.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExifLib">
-      <HintPath>..\..\..\packages\ExifLib.PCL.1.0.0\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+MonoAndroid10+MonoTouch10\ExifLib.dll</HintPath>
+    <Reference Include="ExifLib, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
@@ -50,21 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\XLabs.Platform\device\Accelerometer.designer.cs">
-      <Link>Device\Accelerometer.designer.cs</Link>
-      <DependentUpon>..\Device\Accelerometer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\XLabs.Platform\device\Battery.designer.cs">
-      <Link>Device\Battery.designer.cs</Link>
-      <DependentUpon>..\Device\Battery.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\XLabs.Platform\device\Gyroscope.designer.cs">
-      <Link>Device\Gyroscope.designer.cs</Link>
-      <DependentUpon>..\Device\Gyroscope.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\XLabs.Platform\services\io\FileManager.cs">
-      <Link>Services\IO\FileManager.cs</Link>
-    </Compile>
     <Compile Include="Device\Accelerometer.cs" />
     <Compile Include="Device\AndroidDevice.cs" />
     <Compile Include="Device\Battery.cs" />
@@ -90,12 +76,12 @@
     <Compile Include="Services\Media\MediaPicker.cs" />
     <Compile Include="Services\Media\MediaPickerActivity.cs" />
     <Compile Include="Services\Media\Microphone.cs" />
+    <Compile Include="Services\Media\SoundService.cs" />
     <Compile Include="Services\Network.cs" />
     <Compile Include="Services\NfcDevice.cs" />
     <Compile Include="Services\PhoneService.cs" />
     <Compile Include="Services\Reachability.cs" />
     <Compile Include="Services\SharedPreferencesStorage.cs" />
-    <Compile Include="Services\SoundService.cs" />
     <Compile Include="Services\TextToSpeechService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +105,10 @@
       <Name>XLabs.Platform</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\IO\" />
+  </ItemGroup>
+  <Import Project="..\XLabs.Platform.Shared\XLabs.Platform.Shared.projitems" Label="Shared" Condition="Exists('..\XLabs.Platform.Shared\XLabs.Platform.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

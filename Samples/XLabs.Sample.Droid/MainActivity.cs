@@ -1,10 +1,10 @@
 ﻿// ***********************************************************************
-// Assembly         : Xamarin.Forms.Labs.Sample.Droid
+// Assembly         : XLabs.Sample.Droid
 // Author           : Shawn Anderson
 // Created          : 06-16-2014
 //
 // Last Modified By : Sami Kallio
-// Last Modified On : 09-01-2014
+// Last Modified On : 27-08-2015
 // ***********************************************************************
 // <copyright file="MainActivity.cs" company="">
 //     Copyright (c) 2014 . All rights reserved.
@@ -24,29 +24,32 @@
 // <summary></summary>
 // ***********************************************************************
 
-using Xamarin.Forms;
-
 namespace XLabs.Sample.Droid
 {
     using System.IO;
-
     using Android.App;
     using Android.Content.PM;
     using Android.OS;
+    using Caching;
+    using Caching.SQLite;
+    using Forms;
+    using Forms.Services;
+    using Ioc;
+    using Platform.Device;
+    using Platform.Mvvm;
     using Platform.Services;
-    using XLabs.Caching;
-    using XLabs.Caching.SQLite;
-    using XLabs.Forms;
-    using XLabs.Ioc;
-    using XLabs.Platform.Device;
-    using XLabs.Platform.Mvvm;
-    using XLabs.Sample;
-    using XLabs.Serialization;
+    using Platform.Services.Email;
+    using Platform.Services.Media;
+    using Serialization;
+    using Serialization.ServiceStack;
+    using SQLite.Net;
+    using SQLite.Net.Platform.XamarinAndroid;
+    using Xamarin.Forms;
 
     /// <summary>
     /// Class MainActivity.
     /// </summary>
-    [Activity(Label = "Xamarin.Forms.Labs.Sample.Droid", MainLauncher = true,
+    [Activity(Label = "XLabs.Sample.Droid", MainLauncher = true,
         ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MainActivity : XFormsApplicationDroid
     {
@@ -58,6 +61,14 @@ namespace XLabs.Sample.Droid
         {
             base.OnCreate(bundle);
 
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat) 
+            {
+                Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true); 
+            }
+
+            XLabs.Forms.Controls.HybridWebViewRenderer.GetWebViewClientDelegate = r => new CustomClient(r);
+            XLabs.Forms.Controls.HybridWebViewRenderer.GetWebChromeClientDelegate = r => new CustomChromeClient();
+
             if (!Resolver.IsSet)
             {
                 this.SetIoc();
@@ -65,14 +76,12 @@ namespace XLabs.Sample.Droid
             else
             {
                 var app = Resolver.Resolve<IXFormsApp>() as IXFormsApp<XFormsApplicationDroid>;
-                app.AppContext = this;
+                if (app != null) app.AppContext = this;
             }
 
-            Xamarin.Forms.Forms.Init(this, bundle);
+            Forms.Init(this, bundle);
 
-            App.Init();
-
-            Xamarin.Forms.Forms.ViewInitialized += (sender, e) =>
+            Forms.ViewInitialized += (sender, e) =>
             {
                 if (!string.IsNullOrWhiteSpace(e.View.StyleId))
                 {
@@ -80,7 +89,7 @@ namespace XLabs.Sample.Droid
                 }
             };
 
-            this.SetPage(App.GetMainPage());
+            this.LoadApplication(new App());
         }
 
         /// <summary>
@@ -99,14 +108,18 @@ namespace XLabs.Sample.Droid
 
             resolverContainer.Register<IDevice>(t => AndroidDevice.CurrentDevice)
                 .Register<IDisplay>(t => t.Resolve<IDevice>().Display)
+                .Register<IFontManager>(t => new FontManager(t.Resolve<IDisplay>()))
                 //.Register<IJsonSerializer, Services.Serialization.JsonNET.JsonSerializer>()
-                .Register<IJsonSerializer, XLabs.Serialization.ServiceStack.JsonSerializer>()
+                .Register<IJsonSerializer, JsonSerializer>()
+                .Register<IEmailService, EmailService>()
+                .Register<IMediaPicker, MediaPicker>()
+                .Register<ITextToSpeechService, TextToSpeechService>()
                 .Register<IDependencyContainer>(resolverContainer)
                 .Register<IXFormsApp>(app)
                 .Register<ISecureStorage>(t => new KeyVaultStorage(t.Resolve<IDevice>().Id.ToCharArray()))
                 .Register<ISimpleCache>(
-                    t => new SQLiteSimpleCache(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(),
-                        new SQLite.Net.SQLiteConnectionString(pathToDatabase, true), t.Resolve<IJsonSerializer>()));
+                    t => new SQLiteSimpleCache(new SQLitePlatformAndroid(),
+                        new SQLiteConnectionString(pathToDatabase, true), t.Resolve<IJsonSerializer>()));
 
 
             Resolver.SetResolver(resolverContainer.GetResolver());
